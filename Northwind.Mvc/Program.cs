@@ -1,6 +1,12 @@
+#region Import Namespaces.
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Northwind.Mvc.Data;
+
+#endregion
+
+#region  Configure host web server including database and identity services.
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +22,9 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+#endregion
+
+#region Configure the HTTP request pipeline.
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -43,4 +52,8 @@ app.MapControllerRoute(
 app.MapRazorPages()
    .WithStaticAssets();
 
+#endregion
+
+#region Start the host web server listening for HTTP requests.
 app.Run();
+#endregion
