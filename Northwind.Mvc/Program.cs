@@ -3,6 +3,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Northwind.Mvc.Data;
+using Northwind.EntityModels;
+using Microsoft.Data.SqlClient;
 
 #endregion
 
@@ -19,6 +21,23 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+string? sqlServerConnection = builder.Configuration.GetConnectionString("NorthwindConnection");
+
+if (sqlServerConnection is null)
+{
+    Console.WriteLine("Northwind database connection string is missing from configuration!");
+}
+else
+{
+    SqlConnectionStringBuilder sqlBuilder = new(sqlServerConnection);
+
+    sqlBuilder.IntegratedSecurity = false;
+    sqlBuilder.UserID = Environment.GetEnvironmentVariable("MY_SQL_USR");
+    sqlBuilder.Password = Environment.GetEnvironmentVariable("MY_SQL_PWD");
+    
+    builder.Services.AddNorthwindContext(sqlBuilder.ConnectionString);
+}
 
 var app = builder.Build();
 
